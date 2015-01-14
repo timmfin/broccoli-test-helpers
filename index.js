@@ -13,9 +13,13 @@ function tree(inputTree, filter) {
     var paths = walkSync(inputTree.directory);
  
     if (filter) {
-      return filter(paths, inputTree);
+      paths = filter(paths, inputTree);
     }
-    return paths;
+
+    return {
+      files: paths,
+      directory: inputTree.directory
+    }
   });
 }
  
