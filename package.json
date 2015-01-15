@@ -10,5 +10,10 @@
     "broccoli"
   ],
   "author": "Chad Hietala",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "broccoli": "^0.13.3",
+    "rsvp": "^3.0.16",
+    "walk-sync": "^0.1.3"
+  }
 }
