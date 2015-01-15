@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Test helpers for broccoli",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chadhietala/broccoli-test-helpers"
+  },
   "scripts": {
     "test": "mocha tests/*-test.js"
   },
