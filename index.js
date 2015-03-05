@@ -53,12 +53,18 @@ function makeTestHelper(options) {
  * @return {Promise}
  */
 function cleanupBuilders(cb) {
-  return Promise.all(builders.map(function(builder) {
-    if (cb) {
-      cb();
-    }
-    return builder.cleanup();
-  }));
+  if (builders.length > 0) {
+    return Promise.all(builders.map(function(builder) {
+      if (cb) {
+        cb();
+      }
+      return builder.cleanup();
+    }));
+  } else if (cb) {
+    return Promise.resolve(cb());
+  }
+  
+  return Promise.resolve();
 }
  
 module.exports = {
