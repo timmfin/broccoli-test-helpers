@@ -18,8 +18,9 @@ function tree(inputTree, filter) {
 
     return {
       files: paths,
-      directory: inputTree.directory
-    }
+      directory: inputTree.directory,
+      builder: builder
+    };
   });
 }
  
