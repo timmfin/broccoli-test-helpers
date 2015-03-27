@@ -14,7 +14,7 @@
     "broccoli"
   ],
   "author": "Chad Hietala",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "broccoli": "^0.13.3",
     "rsvp": "^3.0.16",
