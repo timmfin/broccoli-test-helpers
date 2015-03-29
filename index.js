@@ -4,24 +4,29 @@ var Promise  = require('rsvp').Promise;
 var walkSync = require('walk-sync');
 var builders = [];
  
-function tree(inputTree, filter) {
+function tree(inputTree, fixturePath, filter) {
   var builder = new broccoli.Builder(inputTree);
  
   builders.push(builder);
- 
-  return builder.build().then(function(inputTree) {
-    var paths = walkSync(inputTree.directory);
- 
-    if (filter) {
-      paths = filter(paths, inputTree);
-    }
 
-    return {
-      files: paths,
-      directory: inputTree.directory,
-      builder: builder
-    };
-  });
+  var build = function() {
+    process.chdir(fixturePath);
+    return builder.build().then(function(inputTree) {
+      var paths = walkSync(inputTree.directory);
+
+      if (filter) {
+        paths = filter(paths, inputTree);
+      }
+
+      return {
+        files: paths,
+        directory: inputTree.directory,
+        builder: build
+      };
+    });
+  };
+
+  return build();
 }
  
 /**
@@ -36,11 +41,13 @@ function tree(inputTree, filter) {
  */
 function makeTestHelper(options) {
   var cwd = process.cwd();
+  var subject = options.subject;
+  var filter = options.filter;
+  var fixturePath = options.fixturePath;
   return function() {
     var args = arguments;
     return new Promise(function(resolve) {
-      process.chdir(options.fixturePath);
-      resolve(tree(options.subject.apply(undefined, args), options.filter));
+      resolve(tree(subject.apply(undefined, args), fixturePath, filter));
     }).finally(function() {
       process.chdir(cwd);
     });
