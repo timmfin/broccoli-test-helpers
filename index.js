@@ -4,24 +4,25 @@ var Promise  = require('rsvp').Promise;
 var walkSync = require('walk-sync');
 var builders = [];
  
-function tree(inputTree, fixturePath, filter) {
-  var builder = new broccoli.Builder(inputTree);
+function tree(plugin, fixturePath, filter) {
+  var builder = new broccoli.Builder(plugin);
  
   builders.push(builder);
 
   var build = function() {
     process.chdir(fixturePath);
-    return builder.build().then(function(inputTree) {
-      var paths = walkSync(inputTree.directory);
+    return builder.build().then(function(tree) {
+      var paths = walkSync(tree.directory);
 
       if (filter) {
-        paths = filter(paths, inputTree);
+        paths = filter(paths, tree);
       }
 
       return {
         files: paths,
-        directory: inputTree.directory,
-        builder: build
+        directory: tree.directory,
+        builder: build,
+        subject: plugin
       };
     });
   };
@@ -36,18 +37,31 @@ function tree(inputTree, fixturePath, filter) {
  * @param  {Object} options
  * @property {Function} options.subject The function that is under test
  * @property {String} options.fixturePath The path to the fixtures being used for the test
+ * @property {Function} [options.prepSubject] Lifecycle method called before the testing to allow you to setup spies on the test subject. You are passed the instance of the subject.
  * @property {Function} [options.filter] Filtering function that is applied to result of the build.
  * @return {Promise}
  */
 function makeTestHelper(options) {
   var cwd = process.cwd();
-  var subject = options.subject;
+  var Subject = options.subject;
   var filter = options.filter;
   var fixturePath = options.fixturePath;
+  var prepSubject = options.prepSubject;
+
   return function() {
     var args = arguments;
     return new Promise(function(resolve) {
-      resolve(tree(subject.apply(undefined, args), fixturePath, filter));
+      var subject = Subject.apply(undefined, args);
+
+      if (prepSubject) {
+        subject = prepSubject(subject);
+      }
+
+      if (!subject) {
+        throw new Error('You must return the subject instance from `prepSubject`.');
+      }
+
+      resolve(tree(subject, fixturePath, filter));
     }).finally(function() {
       process.chdir(cwd);
     });
