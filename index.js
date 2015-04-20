@@ -6,6 +6,7 @@ var builders = [];
  
 function tree(plugin, fixturePath, filter) {
   var builder = new broccoli.Builder(plugin);
+  var cwd = process.cwd();
  
   builders.push(builder);
 
@@ -21,13 +22,21 @@ function tree(plugin, fixturePath, filter) {
       return {
         files: paths,
         directory: tree.directory,
-        builder: build,
+        builder: function() {
+          return build().then(function(results) {
+            process.chdir(cwd);
+            return results;
+          });
+        },
         subject: plugin
       };
     });
   };
 
-  return build();
+  return build().then(function(results) {
+    process.chdir(cwd);
+    return results;
+  });
 }
  
 /**
