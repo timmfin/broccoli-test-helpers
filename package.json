@@ -16,8 +16,8 @@
   "author": "Chad Hietala",
   "license": "MIT",
   "dependencies": {
-    "broccoli": "^0.13.3",
-    "rsvp": "^3.0.16",
+    "broccoli": "^0.16.2",
+    "rsvp": "^3.0.17",
     "walk-sync": "^0.1.3"
   }
 }
