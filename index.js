@@ -12,8 +12,8 @@ function tree(plugin, fixturePath, filter) {
 
   var build = function() {
     process.chdir(fixturePath);
-    return builder.build().then(function(tree) {
-      var paths = walkSync(tree.directory);
+    return builder.build().then(function() {
+      var paths = walkSync(builder.outputPath);
 
       if (filter) {
         paths = filter(paths, tree);
