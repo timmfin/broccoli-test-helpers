@@ -21,7 +21,7 @@ function tree(plugin, fixturePath, filter) {
 
       return {
         files: paths,
-        directory: tree.directory,
+        directory: builder.outputPath,
         builder: function() {
           return build().then(function(results) {
             process.chdir(cwd);
