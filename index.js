@@ -16,7 +16,7 @@ function tree(plugin, fixturePath, filter) {
       var paths = walkSync(builder.outputPath);
 
       if (filter) {
-        paths = filter(paths, tree);
+        paths = filter(paths, plugin);
       }
 
       return {
